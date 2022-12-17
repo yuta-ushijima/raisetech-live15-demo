@@ -34,7 +34,7 @@ jobs:
           version: '2.10.7'
       - ansible-playbook/playbook:
           playbook: ansible/playbook.yml
-          playbook-options: '-u ec2-user -i hosts/inventory --private_key ~/.ssh/id_rsa'
+          playbook-options: '-u ec2-user -i hosts/inventory --private-key ~/.ssh/id_rsa'
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
