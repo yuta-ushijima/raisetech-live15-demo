@@ -5,6 +5,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@3.1.4
   ansible-playbook: orbss/ansible-playbook@0.0.5
+  ruby: circleci/ruby@2.0.0
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -35,6 +36,21 @@ jobs:
       - ansible-playbook/playbook:
           playbook: ansible/playbook.yml
           playbook-options: '-u ec2-user -i ansible/hosts/inventory --private-key ~/.ssh/id_rsa'
+  executeServerSpec:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - checkout
+      - ruby/install:
+          version: '2.7'
+      - ruby/install-deps:
+          app-dir: serverSpec
+      - run:
+          name: executeServerSpec
+          command: |
+            cd serverSpec
+            bundle exec rspec
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -45,3 +61,6 @@ workflows:
       - executeAnsible:
           requires:
             - executeCloudFormation
+      - executeServerSpec:
+          requires:
+            - executeAnsible
